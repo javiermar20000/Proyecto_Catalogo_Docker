@@ -2,6 +2,8 @@
 
 Stack de referencia que empaqueta una API Node.js, PostgreSQL y un proxy Nginx usando Docker Compose. Sirve como base para practicar multi-stage builds, healthchecks encadenados, redes aisladas, manejo de secretos, escalamiento horizontal del servicio de aplicación y flujos de backup/restore persistentes.
 
+- Integrante: Javier Alonso Martínez Sepúlveda
+
 ## Objetivos del stack de muestra
 - Multi-stage build para la API (builder + runner no root) y reducción de superficie de ataque.
 - Healthchecks reales (`pg_isready` y `GET /health`) que encadenan el arranque con `depends_on: condition: service_healthy`.
