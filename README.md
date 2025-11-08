@@ -76,7 +76,7 @@ Cada componente y práctica del stack se describe con mayor profundidad en `docs
 - `docs/backups.md`
 
 ## Guía de pruebas manuales (comandos + propósito)
-Las siguientes pruebas cubren arranque, observabilidad, inserciones, escalamiento, persistencia y copias de seguridad. Ejecuta cada comando en la raíz del proyecto; posteriormente puedes añadir capturas de pantalla de los resultados.
+Las siguientes pruebas cubren arranque, observabilidad, inserciones, escalamiento, persistencia y copias de seguridad. Ejecute cada comando en la raíz del proyecto para obtener los resultados esperados.
 
 ### 1. `make up`
 - **Propósito**: construir imágenes y levantar el stack inicial.
