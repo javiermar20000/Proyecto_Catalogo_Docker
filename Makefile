@@ -43,7 +43,7 @@ sh-api:
 
 
 sh-db:
-	docker compose exec db sh -lc 'psql -U $$DB_USER -d $$DB_NAME'
+	docker compose exec db sh -lc 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"'
 
 
 size:
