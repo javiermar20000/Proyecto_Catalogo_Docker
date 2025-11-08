@@ -161,20 +161,29 @@ Las siguientes pruebas cubren arranque, observabilidad, inserciones, escalamient
 - **Validación**: demuestra que los secretos/variables permiten operar utilidades administrativas de Postgres.
 <img width="1168" height="114" alt="imagen" src="https://github.com/user-attachments/assets/5ac1a5de-ea85-408b-bb8b-ef08c3e07bb3" />
 
-### 13. `make restore`
+### 13. `make sh-db`
+- **Propósito**: abrir una consola psql dentro del contenedor db usando las credenciales definidas en el stack (sin exponer secretos en el host), y realizar acciones previas al restore (validar conexión, listar tablas, limpiar esquema).
+- **Resultado esperado**: se abre el prompt de psql (verás algo como catalogo=#). Desde ahí puedes ejecutar comandos SQL.
+- **Validación**: Confirmar que la conexión usa las credenciales del contenedor, ver tablas actuales, borrar la tabla items de la base de datos postgreSQL para proceder a restaurar datos
+<img width="1089" height="545" alt="imagen" src="https://github.com/user-attachments/assets/ebaf0a84-3e6d-4c88-9932-9d042f9fcc48" />
+
+
+### 14. `make restore`
 - **Propósito**: restaurar el backup recientemente generado.
 - **Resultado esperado**: `psql` lee `backup.sql` sin errores; tras completarse, la data coincide con el dump.
 - **Validación**: prueba la estrategia de recuperación ante desastres y permisos dentro del contenedor.
+<img width="1189" height="769" alt="imagen" src="https://github.com/user-attachments/assets/04dd41f0-a8a1-4f98-b588-90f500b19a6c" />
 
 
-### 14. `make build`
+
+### 15. `make build`
 - **Propósito**: reconstruir la imagen de la API usando el Dockerfile multi-stage.
 - **Resultado esperado**: paso "Builder" instala dependencias y "Runner" copia sólo artefactos necesarios, finalizando con usuario `app`.
 - **Validación**: asegura que los cambios en código o dependencias se empaqueten correctamente y que la idea de multi-stage se mantenga.
 <img width="1449" height="1078" alt="imagen" src="https://github.com/user-attachments/assets/51d2affb-c548-44c6-a8ba-cc277753d522" />
 
 
-### 15. `make size`
+### 16. `make size`
 - **Propósito**: consultar el peso de la imagen final `catalogo-api`.
 - **Resultado esperado**: línea con `REPOSITORY TAG SIZE`, evidenciando el beneficio de la etapa runner minimalista.
 - **Validación**: sirve como métrica rápida para detectar incrementos inesperados de tamaño.
