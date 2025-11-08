@@ -1,0 +1,89 @@
+version: "3.9"
+
+
+name: ${COMPOSE_PROJECT_NAME:-catalogo}
+
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+
+
+volumes:
+  pgdata:
+
+
+networks:
+  backend:
+    driver: bridge
+  edge:
+    driver: bridge
+
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ${COMPOSE_PROJECT_NAME:-catalogo}-db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - backend
+    restart: unless-stopped
+
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    image: ${COMPOSE_PROJECT_NAME:-catalogo}-api:latest
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${API_PORT}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_NAME: ${DB_NAME}
+      DB_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    expose:
+      - "${API_PORT}"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:${API_PORT}/health | grep -q 'ok'"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - backend
+      - edge
+    restart: unless-stopped
+
+
+  proxy:
+    image: nginx:1.27-alpine
+    container_name: ${COMPOSE_PROJECT_NAME:-catalogo}-proxy
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - edge
+    restart: unless-stopped

@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS items (
+id SERIAL PRIMARY KEY,
+name TEXT NOT NULL,
+price NUMERIC(12,2) NOT NULL DEFAULT 0
+);
+
+
+INSERT INTO items(name, price) VALUES
+('Cafetera', 39990),
+('Auriculares', 25990),
+('Teclado', 54990)
+ON CONFLICT DO NOTHING;
